@@ -141,7 +141,7 @@ class Server final : public ServerInterface, private GrpcLibraryCodegen {
   Server(int max_message_size, ChannelArguments* args,
          std::shared_ptr<std::vector<std::unique_ptr<ServerCompletionQueue>>>
              sync_server_cqs,
-         int min_pollers, int max_pollers, int sync_cq_timeout_msec);
+         int min_pollers, int max_pollers, int max_threads, int sync_cq_timeout_msec);
 
   /// Register a service. This call does not take ownership of the service.
   /// The service must exist for the lifetime of the Server instance.

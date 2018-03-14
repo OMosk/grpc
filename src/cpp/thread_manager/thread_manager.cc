@@ -45,11 +45,12 @@ ThreadManager::WorkerThread::~WorkerThread() {
   thd_.join();
 }
 
-ThreadManager::ThreadManager(int min_pollers, int max_pollers)
+ThreadManager::ThreadManager(int min_pollers, int max_pollers, int max_threads)
     : shutdown_(false),
       num_pollers_(0),
       min_pollers_(min_pollers),
       max_pollers_(max_pollers == -1 ? INT_MAX : max_pollers),
+      max_threads_(max_threads == -1 ? INT_MAX : max_threads),
       num_threads_(0) {}
 
 ThreadManager::~ThreadManager() {
@@ -138,7 +139,7 @@ void ThreadManager::MainWorkLoop() {
       case WORK_FOUND:
         // If we got work and there are now insufficient pollers, start a new
         // one
-        if (!shutdown_ && num_pollers_ < min_pollers_) {
+        if (!shutdown_ && num_pollers_ < min_pollers_ && num_threads_ < max_threads_) {
           num_pollers_++;
           num_threads_++;
           // Drop lock before spawning thread to avoid contention

@@ -119,6 +119,9 @@ ServerBuilder& ServerBuilder::SetSyncServerOption(
     case CQ_TIMEOUT_MSEC:
       sync_server_settings_.cq_timeout_msec = val;
       break;
+    case MAX_THREADS:
+      sync_server_settings_.max_threads = val;
+      break;
   }
   return *this;
 }
@@ -262,15 +265,17 @@ std::unique_ptr<Server> ServerBuilder::BuildAndStart() {
   std::unique_ptr<Server> server(new Server(
       max_receive_message_size_, &args, sync_server_cqs,
       sync_server_settings_.min_pollers, sync_server_settings_.max_pollers,
+      sync_server_settings_.max_threads,
       sync_server_settings_.cq_timeout_msec));
 
   if (has_sync_methods) {
     // This is a Sync server
     gpr_log(GPR_INFO,
             "Synchronous server. Num CQs: %d, Min pollers: %d, Max Pollers: "
-            "%d, CQ timeout (msec): %d",
+            "%d, Max threads: %d, CQ timeout (msec): %d",
             sync_server_settings_.num_cqs, sync_server_settings_.min_pollers,
             sync_server_settings_.max_pollers,
+            sync_server_settings_.max_threads,
             sync_server_settings_.cq_timeout_msec);
   }
 

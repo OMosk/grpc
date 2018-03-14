@@ -188,6 +188,7 @@ class ServerBuilder {
     NUM_CQS,         ///< Number of completion queues.
     MIN_POLLERS,     ///< Minimum number of polling threads.
     MAX_POLLERS,     ///< Maximum number of polling threads.
+    MAX_THREADS,     ///< Maximum number of running threads.
     CQ_TIMEOUT_MSEC  ///< Completion queue timeout in milliseconds.
   };
 
@@ -221,7 +222,7 @@ class ServerBuilder {
 
   struct SyncServerSettings {
     SyncServerSettings()
-        : num_cqs(1), min_pollers(1), max_pollers(2), cq_timeout_msec(10000) {}
+        : num_cqs(1), min_pollers(1), max_pollers(2), max_threads(-1), cq_timeout_msec(10000) {}
 
     /// Number of server completion queues to create to listen to incoming RPCs.
     int num_cqs;
@@ -233,6 +234,9 @@ class ServerBuilder {
     /// Maximum number of threads per completion queue that can be listening to
     /// incoming RPCs.
     int max_pollers;
+
+    /// Maximum number of threads processing PRC per completion queue
+    int max_threads;
 
     /// The timeout for server completion queue's AsyncNext call.
     int cq_timeout_msec;
